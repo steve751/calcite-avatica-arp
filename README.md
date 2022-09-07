@@ -19,6 +19,22 @@ limitations under the License.
 [![Build Status](https://travis-ci.org/apache/calcite-avatica.svg?branch=main)](https://travis-ci.org/apache/calcite-avatica)
 [![CI Status](https://github.com/apache/calcite-avatica/workflows/CI/badge.svg)](https://github.com/apache/calcite-avatica/actions)
 
+# Druid Dremio ARP compatable JDBC
+
+This Fork of Apache Calcite -- Avatica is intended for generating a JDBC driver for Apache Druid that is compatable with the Dremio ARP framework [Creating an ARP Connector](https://www.dremio.com/resources/tutorials/how-to-create-an-arp-connector/).
+
+Existing ARP connector : [Druid ARP Connector](https://github.com/steve751/dremio-druid-connector).
+
+# Quickstart JDBC Build :
+
+$ git clone "https://github.com/steve751/calcite-avatica-arp"
+
+$ cd calcite-avatica-arp
+
+$ ./gradlew build
+
+JDBC will be created as : calcite-avatica-arp/shaded/core/build/libs/avatica-x.x.x-SNAPSHOT-shadow.jar
+
 # Apache Calcite -- Avatica
 
 Apache Calcite's Avatica is a framework for building database drivers.
@@ -29,3 +45,4 @@ For more details, see the [home page](https://calcite.apache.org/avatica).
 
 Release notes for all published versions are available on the [history
 page](https://calcite.apache.org/avatica/docs/history.html).
+
