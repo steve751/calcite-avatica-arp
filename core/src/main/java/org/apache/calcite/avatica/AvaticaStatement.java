@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Implementation of {@link java.sql.Statement}
@@ -146,6 +149,18 @@ public abstract class AvaticaStatement
   protected void executeInternal(String sql) throws SQLException {
     // reset previous state before moving forward.
     this.updateCount = -1;
+    String sql2 = sql.replace(" druid.", " ").replace(" \"druid\".", " ");
+    Pattern limitpat = Pattern.compile("LIMIT [0-9]{4}\\)");
+    Matcher matcher = limitpat.matcher(sql2);
+    String sql3;
+    if (matcher.find()) {
+      String limit_string = sql2.substring(matcher.start(), matcher.end());
+      String sql3_p1 =  sql2.substring(0, matcher.start());
+      String sql3_p2 =  sql2.substring(matcher.end(), sql2.length());
+      sql3 = sql3_p1 + sql3_p2 + ' ' + limit_string;
+    } else {
+      sql3 = sql2;
+    }
     try {
       // In JDBC, maxRowCount = 0 means no limit; in prepare it means LIMIT 0
       final long maxRowCount1 = maxRowCount <= 0 ? -1 : maxRowCount;
@@ -153,14 +168,14 @@ public abstract class AvaticaStatement
         try {
           @SuppressWarnings("unused")
           Meta.ExecuteResult x =
-              connection.prepareAndExecuteInternal(this, sql, maxRowCount1);
+              connection.prepareAndExecuteInternal(this, sql3, maxRowCount1);
           return;
         } catch (NoSuchStatementException e) {
           resetStatement();
         }
       }
     } catch (RuntimeException e) {
-      throw AvaticaConnection.HELPER.createException("Error while executing SQL \"" + sql + "\": "
+      throw AvaticaConnection.HELPER.createException("Error while executing SQL \"" + sql3 + "\": "
           + e.getMessage(), e);
     }
 

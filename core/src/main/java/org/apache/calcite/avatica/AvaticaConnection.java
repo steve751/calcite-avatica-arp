@@ -53,7 +53,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * Implementation of JDBC connection
  * for the Avatica framework.
@@ -353,12 +354,24 @@ public abstract class AvaticaConnection implements Connection {
       int resultSetConcurrency,
       int resultSetHoldability) throws SQLException {
     checkOpen();
+    String sql2 = sql.replace(" druid.", " ").replace(" \"druid\".", " ");
+    Pattern limitpat = Pattern.compile("LIMIT [0-9]{4}\\)");
+    Matcher matcher = limitpat.matcher(sql2);
+    String sql3;
+    if (matcher.find()) {
+      String limit_string = sql2.substring(matcher.start(), matcher.end());
+      String sql3_p1 =  sql2.substring(0, matcher.start());
+      String sql3_p2 =  sql2.substring(matcher.end(), sql2.length());
+      sql3 = sql3_p1 + sql3_p2 + ' ' + limit_string;
+    } else {
+      sql3 = sql2;
+    }
     try {
-      final Meta.StatementHandle h = meta.prepare(handle, sql, -1);
+      final Meta.StatementHandle h = meta.prepare(handle, sql3, -1);
       return factory.newPreparedStatement(this, h, h.signature, resultSetType,
           resultSetConcurrency, resultSetHoldability);
     } catch (RuntimeException e) {
-      throw HELPER.createException("while preparing SQL: " + sql, e);
+      throw HELPER.createException("while preparing SQL: " + sql3, e);
     }
   }
 
