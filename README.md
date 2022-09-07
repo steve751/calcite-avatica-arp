@@ -21,9 +21,9 @@ limitations under the License.
 
 # Druid Dremio ARP compatable JDBC
 
-This Fork of Apache Calcite -- Avatica is intended for generating a JDBC driver for Apache Druid that is compatable with the Dremio ARP framework [Creating an ARP Connector](https://www.dremio.com/resources/tutorials/how-to-create-an-arp-connector/).
+This Fork of Apache Calcite -- Avatica is intended for generating a JDBC driver for Apache Druid that is compatable with the Dremio ARP framework. See:  [Creating an ARP Connector](https://www.dremio.com/resources/tutorials/how-to-create-an-arp-connector/).
 
-Existing ARP connector : [Druid ARP Connector](https://github.com/steve751/dremio-druid-connector).
+Druid ARP connector : [Druid ARP Connector](https://github.com/steve751/dremio-druid-connector).
 
 # Quickstart JDBC Build :
 
